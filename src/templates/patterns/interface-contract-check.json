@@ -1,0 +1,15 @@
+{
+  "name": "interface-contract-check",
+  "tags": ["interface", "api", "contract", "接口", "schema", "type", "protocol"],
+  "description": "Verify interface contracts before implementation. Ensures both sides of an API boundary agree.",
+  "steps": [
+    "List all interfaces/types this change touches",
+    "For each interface, find all implementations and callers",
+    "Check that the proposed change is backward compatible (or document breaking changes)",
+    "Verify input validation — what happens with edge-case inputs",
+    "Verify output format — does it match what consumers expect",
+    "Add or update type tests if the language supports them"
+  ],
+  "applicable_types": ["test_target", "root_target"],
+  "version": "1.0"
+}

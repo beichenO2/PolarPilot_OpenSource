@@ -1,0 +1,8 @@
+{
+  "fundamentalGoal": "Add a 'Hello PolarPilot' example block to README.md under the CLI Usage section.",
+  "executionApproach": "edit",
+  "stopCondition": {
+    "successCriteria": "README.md contains the line 'Hello PolarPilot' and commit is clean.",
+    "failureCriteria": "README.md edit cannot be applied without conflicting with existing content."
+  }
+}

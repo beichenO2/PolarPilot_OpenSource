@@ -1,0 +1,15 @@
+{
+  "name": "new-feature-scaffold",
+  "tags": ["feature", "new", "create", "implement", "新增", "功能", "build", "scaffold"],
+  "description": "New feature scaffolding: types first, then skeleton, then implementation, then tests.",
+  "steps": [
+    "Define the public interface (types, function signatures, exports) before writing logic",
+    "Create file stubs with correct imports/exports — verify the project compiles",
+    "Implement the core happy path first, skipping edge cases",
+    "Add input validation and error handling",
+    "Write tests covering happy path, edge cases, and error paths",
+    "Wire the feature into the existing system (routes, config, CLI flags)"
+  ],
+  "applicable_types": ["test_target", "root_target"],
+  "version": "1.0"
+}

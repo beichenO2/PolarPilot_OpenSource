@@ -1,0 +1,63 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://polarisor.local/polarpilot/assistant-task-done.schema.json",
+  "title": "PolarPilot AssistantTaskDone",
+  "description": "Payload contract for PolarPilot → PolarClaw assistant-task completion notification (delivered as LobsterEvent.payload with event.type = 'assistant_task_done').",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "task_id",
+    "status",
+    "summary",
+    "artifacts",
+    "iterations",
+    "tokens_used",
+    "started_at",
+    "finished_at"
+  ],
+  "properties": {
+    "task_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Stable identifier echoed back to the caller (defaults to 'assist-<epoch_ms>')."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["success", "failure", "timeout", "aborted"],
+      "description": "Terminal status of the assistant run."
+    },
+    "summary": {
+      "type": "string",
+      "description": "Human-readable summary of the final iteration."
+    },
+    "artifacts": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Repository-relative paths (or symbolic identifiers) of artifacts produced."
+    },
+    "iterations": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Total orchestrator iterations executed."
+    },
+    "tokens_used": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Total input+output tokens consumed."
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp when the orchestrator started."
+    },
+    "finished_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp when the done event was emitted."
+    },
+    "error": {
+      "type": "string",
+      "description": "Error message when status is 'failure' / 'timeout' / 'aborted'."
+    }
+  }
+}

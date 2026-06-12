@@ -1,0 +1,592 @@
+{
+  "name": "PolarPilot",
+  "_meta": {
+    "schema_version": "1.0",
+    "last_synced_at": "2026-06-10T00:00:00+08:00"
+  },
+  "description": "Autonomous project evolution daemon — target-driven iterative coding with YOLO kernel; standalone successor to PolarClaw embedded Pilot",
+  "tier": "service",
+  "status": "active",
+  "version": "0.1.0",
+  "requirements": [
+    {
+      "id": "R1",
+      "need": "项目骨架与从 PolarClaw 迁移",
+      "approach": "新建独立 Node 项目，迁移 PolarClaw src/pilot/ 11 个文件，重写 CLI 入口，独立版本与构建",
+      "features": [
+        {
+          "name": "项目骨架",
+          "status": "done",
+          "tech": [
+            "TypeScript 5.8",
+            "tsdown",
+            "vitest"
+          ],
+          "behavior": [
+            "package.json + tsconfig.json + tsdown.config.ts 完整",
+            "npm install + npm run build 通过",
+            "npx polarpilot --version 输出 0.1.0"
+          ],
+          "evidence": [
+            "260502_compiled/PolarPilot_1.md done; PolarPilot_1__任务_token.md done"
+          ],
+          "test_status": "passed"
+        },
+        {
+          "name": "Pilot 模块迁移",
+          "status": "done",
+          "tech": [
+            "TypeScript"
+          ],
+          "behavior": [
+            "PolarClaw src/pilot/ 全部 11 个文件迁入 PolarPilot/src/pilot/",
+            "类型签名与依赖关系保留",
+            "构建产物可独立运行"
+          ],
+          "evidence": [
+            "260502_compiled/PolarPilot_1.md done"
+          ],
+          "test_status": "passed"
+        },
+        {
+          "name": "CLI 入口",
+          "status": "done",
+          "tech": [
+            "commander"
+          ],
+          "behavior": [
+            "src/cli.ts commander-based",
+            "支持 --version / --project / --agent / --daemon / --worktree / --max-iterations / --max-tokens"
+          ],
+          "evidence": [
+            "git e05cf33; npm test 11/11 passed"
+          ],
+          "test_status": "passed"
+        }
+      ]
+    },
+    {
+      "id": "R2",
+      "need": "循环引擎核心（FindTarget → DrawBoard → Shoot → MoveBoard）",
+      "approach": "Agent factory（claude/codex adapter）+ orchestrator + iteration prompt + git/run/config/sleep/debug-log/interrupt/commit-message 工具集",
+      "features": [
+        {
+          "name": "Agent adapter 与 factory",
+          "status": "done",
+          "tech": [
+            "TypeScript"
+          ],
+          "behavior": [
+            "AgentName 枚举 claude/codex",
+            "isAgentName 类型守卫",
+            "Claude/Codex adapter 接口对齐"
+          ],
+          "evidence": [
+            "260502_compiled/PolarPilot_1_1.md done"
+          ],
+          "test_status": "passed"
+        },
+        {
+          "name": "Orchestrator + TargetProvider",
+          "status": "done",
+          "tech": [
+            "TypeScript"
+          ],
+          "behavior": [
+            "src/core/orchestrator.ts 含 TargetProvider 接口",
+            "iteration-prompt 模板可注入"
+          ],
+          "evidence": [
+            "PolarPilot_1_1.md done; orchestrator tests 6/6 passed (e05cf33)"
+          ],
+          "test_status": "passed"
+        },
+        {
+          "name": "运行时工具集",
+          "status": "done",
+          "tech": [
+            "TypeScript"
+          ],
+          "behavior": [
+            "git.ts + run.ts + config.ts + sleep.ts + debug-log.ts + interrupt-state.ts + commit-message.ts 全部就位"
+          ],
+          "evidence": [
+            "PolarPilot_1_1.md done"
+          ],
+          "test_status": "passed"
+        },
+        {
+          "name": "独立上下文 Review 模块",
+          "status": "done",
+          "tech": [
+            "TypeScript"
+          ],
+          "behavior": [
+            "reviewShot 通过 AgentFactory 创建独立上下文 Agent 做 review",
+            "processShot hit 分支：review_enabled=true 时调用 review，approved → completed，rejected → MoveBoard",
+            "review_enabled=false 时保持原有逻辑，直接 completed（向后兼容）",
+            "PilotRuntimeConfig 新增 review_enabled（默认 true）和 review_agent 字段",
+            "review prompt 包含'第一次看这段代码'新鲜上下文指令"
+          ],
+          "evidence": [
+            "260508_compiled/PolarPilot.md Step1 (E1 已完成，补编译文档)"
+          ],
+          "test_status": "passed"
+        },
+        {
+          "name": "思考范式路由",
+          "status": "done",
+          "tech": [
+            "TypeScript",
+            "JSON"
+          ],
+          "behavior": [
+            "patterns/ 目录含 12 个 JSON 思考模板（符合 Agent_core thinking-pattern.schema.json）",
+            "selectPattern 按优先级规则匹配：suggested_pattern > applicable_types > tags > null",
+            "buildIterationPrompt 匹配时注入模板 steps 到 prompt 开头",
+            "Target 新增 suggested_pattern 可选字段",
+            "PatternRouter 抽象预留，支持未来替换为学习型 router"
+          ],
+          "evidence": [
+            "260508_compiled/PolarPilot.md Step2 (E2 已完成，补编译文档)"
+          ],
+          "test_status": "passed"
+        },
+        {
+          "name": "arrow_logs 自学习接入",
+          "status": "done",
+          "tech": [
+            "TypeScript",
+            "HTTP API"
+          ],
+          "behavior": [
+            "arrow-log-exporter.ts 导出 target 中的 arrow_logs 为 ArrowLogRecord 格式",
+            "runtime.ts onCrystallize 回调触发 arrow_logs 导出",
+            "PolarClaw arrow-log-adapter.ts 接收并存储 arrow_logs",
+            "pattern-detector.ts detectFromArrowLogs 分析 hit/miss 与 delta 相关性",
+            "高命中率 delta 模式可自动生成思考模板（预留）"
+          ],
+          "evidence": [
+            "260508_compiled/PolarPilot_E3_findings.md done"
+          ],
+          "test_status": "passed"
+        },
+        {
+          "name": "E3 思考模板自动注入闭环",
+          "status": "done",
+          "tech": [
+            "TypeScript"
+          ],
+          "behavior": [
+            "learning-tools.ts 新增 learning_run_arrow_pattern 工具",
+            "从 arrow_logs 分析高命中率 delta 模式",
+            "自动生成思考模板并注入到 patterns/ 目录",
+            "实现「射箭→分析→生成模板→注入」完整闭环"
+          ],
+          "evidence": [
+            "2026-05-11: learning_run_arrow_pattern 工具实现",
+            "2026-05-13: pattern-router.test.ts 12/12 passed; buildIterationPrompt pattern injection verified; arrow_log export loop verified"
+          ],
+          "test_status": "passed"
+        }
+      ]
+    },
+    {
+      "id": "R3",
+      "need": "YOLO 内核与状态机融合",
+      "approach": "YOLO Receipt/Failure/Ledger 数据结构 + orchestrator + Pilot 状态机 processShot 消费 Receipt + Runtime 整合",
+      "features": [
+        {
+          "name": "YOLO 数据层",
+          "status": "done",
+          "tech": [
+            "TypeScript"
+          ],
+          "behavior": [
+            "yolo/types.ts + yolo/receipt.ts + yolo/failure.ts + yolo/ledger.ts 完整",
+            "validateReceipt null-safe（fix 9be9b65）"
+          ],
+          "evidence": [
+            "260502_compiled/PolarPilot_1_1_1.md done; npm test 11/11"
+          ],
+          "test_status": "passed"
+        },
+        {
+          "name": "YOLO Orchestrator",
+          "status": "done",
+          "tech": [
+            "TypeScript"
+          ],
+          "behavior": [
+            "yolo/orchestrator.ts 实现",
+            "状态机 processShot 消费 YOLO Receipt"
+          ],
+          "evidence": [
+            "PolarPilot_1_1_1.md done"
+          ],
+          "test_status": "passed"
+        },
+        {
+          "name": "Runtime 整合",
+          "status": "done",
+          "tech": [
+            "TypeScript"
+          ],
+          "behavior": [
+            "daemon + 状态机 + YOLO 串成 Runtime",
+            "压力测试: 5x full suite (23/23) + 100 rapid iterations + 50 receipt validations",
+            "攻击测试: malformed inputs / ledger boundary / edge values 通过"
+          ],
+          "evidence": [
+            "PolarPilot_1_1_1.md done; pre-YOLO commit f3b8183; with YOLO commit 9be9b65"
+          ],
+          "test_status": "passed"
+        }
+      ]
+    },
+    {
+      "id": "R4",
+      "need": "事件驱动 daemon HTTP 服务 + 进攻性自愈",
+      "approach": "--daemon 模式拉起 createDaemon + http server，监听 lobster-events.jsonl，对外暴露 pilot 契约 API；整点扫描机制（每小时第0分钟）加载 lobster/daemon-config.json 恶性 bug 定义，检查 .lobster-lock 锁文件防止冲突，2小时窗口保护后触发 FixStrategy 自愈（retry_after_deps / git_revert_last_commit / wait_and_restart / notify_only）",
+      "features": [
+        {
+          "name": "Daemon 主入口",
+          "status": "done",
+          "tech": [
+            "node:http",
+            "commander"
+          ],
+          "behavior": [
+            "node dist/cli.mjs --daemon --project <name> 可稳定驻留",
+            "createDaemon dedup 窗口 10min，daily health-scan 03:00"
+          ],
+          "evidence": [
+            "git bb93cbf feat(cli): wire --daemon to lobster-event server"
+          ],
+          "test_status": "passed"
+        },
+        {
+          "name": "契约 API",
+          "status": "done",
+          "tech": [
+            "node:http"
+          ],
+          "interfaces": [
+            "GET /api/pilot/health",
+            "GET /api/pilot/status",
+            "GET /api/pilot/status/:project",
+            "GET /api/pilot/targets/:project",
+            "GET /api/pilot/targets/:project/:targetId",
+            "GET /api/pilot/events?project=&since=&limit=",
+            "POST /api/pilot/events"
+          ],
+          "behavior": [
+            "默认监听 127.0.0.1:4900（POLARPILOT_PORT 可覆盖）",
+            "POST /api/pilot/events 接受新事件并 append 到 SOTAgent/data/lobster-events.jsonl"
+          ],
+          "evidence": [
+            "PolarPilot_IntegrationCheck token done — 全部端点 200"
+          ],
+          "test_status": "passed"
+        },
+        {
+          "name": "Agentic Healer（LLM 自愈）",
+          "status": "done",
+          "tech": [
+            "PolarPrivate LLM Proxy",
+            "node:child_process"
+          ],
+          "behavior": [
+            "机械化 self-healer 失败后调用 agentic-healer.ts",
+            "LLM 分析错误 + git log + polaris.json → 生成修复命令",
+            "修复成功 commit+push；失败推送 Hub /api/ui/alerts",
+            "成功经验写入 ~/.polarcop/healer-knowledge.json"
+          ],
+          "evidence": [
+            "PolarPilot/src/pilot/agentic-healer.ts",
+            "daemon.ts 集成 agenticHeal 升级路径"
+          ],
+          "test_status": "passed"
+        }
+      ]
+    },
+    {
+      "id": "R5",
+      "need": "自主发现能力 — Agent 主动探索和发现新目标",
+      "approach": "discovery.ts 模块 + 状态机扩展 approveTarget/rejectTarget/runDiscovery，支持 Agent 在无明确目标时主动探索",
+      "features": [
+        {
+          "name": "Discovery 模块",
+          "status": "done",
+          "tech": [
+            "TypeScript"
+          ],
+          "behavior": [
+            "src/pilot/discovery.ts 实现自主发现逻辑",
+            "扫描项目状态、代码结构、SSoT 未完成需求",
+            "生成候选目标列表供 Agent 选择"
+          ],
+          "evidence": [
+            "2026-05-11: discovery.ts 模块实现; discovery.test.ts 6/6 passed"
+          ],
+          "test_status": "passed"
+        },
+        {
+          "name": "状态机 Discovery 扩展",
+          "status": "done",
+          "tech": [
+            "TypeScript"
+          ],
+          "behavior": [
+            "state-machine.ts 新增 approveTarget 状态转换",
+            "state-machine.ts 新增 rejectTarget 状态转换",
+            "state-machine.ts 新增 runDiscovery 状态转换",
+            "支持从 FindTarget 跳转到 Discovery 模式"
+          ],
+          "evidence": [
+            "2026-05-11: state-machine.ts 扩展实现; discovery.test.ts 6/6 passed"
+          ],
+          "test_status": "passed"
+        },
+        {
+          "name": "客观评估前置 (E4)",
+          "status": "done",
+          "tech": [
+            "TypeScript"
+          ],
+          "behavior": [
+            "test-executor.ts 实现测试执行器",
+            "processShot 扩展：有 leaf_test 时先执行测试",
+            "测试通过才进入 Review，测试不通过直接 MoveBoard",
+            "支持超时配置和自定义环境变量"
+          ],
+          "evidence": [
+            "2026-05-11: test-executor.ts + state-machine.ts 扩展; test-executor.test.ts passed"
+          ],
+          "test_status": "passed"
+        },
+        {
+          "name": "自主目标发现完整闭环 (E5)",
+          "status": "done",
+          "tech": [
+            "TypeScript"
+          ],
+          "behavior": [
+            "TargetStatus 新增 pending_approval 状态",
+            "findTarget 返回 pending_approval targets",
+            "approveTarget/rejectTarget 人类确认管道",
+            "从 polaris.json requirements/features 推断候选目标",
+            "从 arrow_logs 识别连续 miss 模式"
+          ],
+          "evidence": [
+            "2026-05-11: discovery.ts + state-machine.ts; discovery.test.ts 6/6 passed"
+          ],
+          "test_status": "passed"
+        }
+      ]
+    },
+    {
+      "id": "R6",
+      "need": "Workflow 引擎与路由决策",
+      "approach": "workflow.md ASCII 框图编译器 + 路由 Agent（快模型决策）+ PilotMode 支持 + executeWorkflow 串行执行层 + assistant 真实执行 + CLI 路由",
+      "features": [
+        {
+          "name": "workflow/compiler.ts",
+          "status": "done",
+          "tech": [
+            "TypeScript"
+          ],
+          "behavior": [
+            "workflow.md ASCII 框图编译为 CompiledWorkflow",
+            "解析 steps / edges / entry_point / terminal_points"
+          ],
+          "evidence": [
+            "src/workflow/compiler.ts 已落地 (e05cf33 之前已存在)",
+            "2026-05-12: 260512_compiled/PolarPilot.md R6 SSoT 同步 (commit c8a7e85)",
+            "compiler.test.ts 5 项 pre-existing 失败 (与 ASCII 解析边界相关，独立追踪，不阻塞本任务交付)",
+            "2026-05-12: compiler 正则修复（parseSteps header m flag + parseEdges 垂直连接算法重写 + 箭头正则 lazy-whitespace-dot pattern 修正），6/6 测试通过；research mode CLI 端到端通过",
+            "2026-05-13: daemon 事件订阅切换为 chokidar，跨进程链路稳定（3/3 集成测试通过）"
+          ],
+          "test_status": "passed"
+        },
+        {
+          "name": "workflow/router-agent.ts",
+          "status": "done",
+          "tech": [
+            "TypeScript"
+          ],
+          "behavior": [
+            "路由 Agent 通过快模型选择下一步执行节点"
+          ],
+          "evidence": [
+            "src/workflow/router-agent.ts 已落地",
+            "router-agent.test.ts 通过 (60+/60+ vitest 主套件)",
+            "2026-05-12: R6 SSoT 同步"
+          ],
+          "test_status": "passed"
+        },
+        {
+          "name": "workflow/memory.ts",
+          "status": "done",
+          "tech": [
+            "TypeScript"
+          ],
+          "behavior": [
+            "四层记忆 checkpoint / 输入输出文件管理"
+          ],
+          "evidence": [
+            "src/workflow/memory.ts 已落地",
+            "memory.test.ts 通过",
+            "2026-05-12: R6 SSoT 同步"
+          ],
+          "test_status": "passed"
+        },
+        {
+          "name": "CompiledWorkflow 类型定义",
+          "status": "done",
+          "tech": [
+            "TypeScript"
+          ],
+          "behavior": [
+            "CompiledWorkflow / StepDef / Edge / AssistantTask 等类型导出于 src/workflow/types.ts"
+          ],
+          "evidence": [
+            "src/workflow/types.ts 已落地",
+            "tests/contracts/assistant-task.contract.test.ts 验证 AssistantTask 形状",
+            "2026-05-12: R6 SSoT 同步"
+          ],
+          "test_status": "passed"
+        },
+        {
+          "name": "PilotMode 支持",
+          "status": "done",
+          "tech": [
+            "TypeScript",
+            "commander"
+          ],
+          "behavior": [
+            "PilotMode = 'guard' | 'research' | 'assistant' 定义于 workflow/types.ts",
+            "CLI --mode <mode> 入参在 cli.ts 落地，非 daemon 直跑按 mode dispatch",
+            "guard → --daemon；research → executeWorkflow；assistant → runAssistantTask",
+            "executeWorkflow(compiled, ctx) 串行执行所有 steps，支持 success/failure/always/all_done 边条件",
+            "runAssistantTask(opts) 构造一次性 Orchestrator + 写 assistant_task_done 事件到 lobster-events.jsonl",
+            "daemon.processEvent 收到 assistant_task 改走 runAssistantTask（不再 fallback align()）"
+          ],
+          "evidence": [
+            "2026-05-12: CLI 路由 + workflow 执行 + assistant 落地 (commits 26bf503 / 7f55207 / d9ec730 / df71297 / 24f8e04 / cca2929 / c8a7e85)",
+            "260512_compiled/PolarPilot.md Step 1–10 完成",
+            "tests/contracts/assistant-task.contract.test.ts 8 用例全绿（含 L1.5 breaking-change 检测）",
+            "polarpilot --help 输出 --mode / --workflow / --assistant-task 三个新 option"
+          ],
+          "test_status": "passed"
+        }
+      ]
+    },
+    {
+      "id": "R7",
+      "need": "干净记忆与 PolarMemory + KnowLever 集成",
+      "approach": "四层记忆管理器（Soul/长期记忆/Context/Scratch）+ PolarMemory 语义检索 + KnowLever RAG 知识增强 + 内容去重 + checkpoint 刷新机制",
+      "features": [
+        {
+          "name": "四层记忆管理器",
+          "status": "done",
+          "test_status": "passed",
+          "evidence": [
+            "src/workflow/four-layer-memory.ts; tests/workflow/four-layer-memory.test.ts 121/121 passed"
+          ]
+        },
+        {
+          "name": "PolarMemory /api/blocks/search 调用",
+          "status": "done",
+          "test_status": "passed",
+          "evidence": [
+            "src/workflow/memory.ts top_k param; src/workflow/types.ts Block/BlockSearchResult types"
+          ]
+        },
+        {
+          "name": "KnowLever RAG 客户端适配器",
+          "status": "done",
+          "test_status": "passed",
+          "evidence": [
+            "src/workflow/knowlever-client.ts; tests/workflow/knowlever-client.test.ts 18/18 passed; search/ingest/compile API 封装"
+          ]
+        },
+        {
+          "name": "KnowLever + PolarMemory 长期记忆融合与去重",
+          "status": "done",
+          "test_status": "passed",
+          "evidence": [
+            "src/workflow/four-layer-memory.ts knowleverClient + deduplicateKnowLeverResults (trigram Jaccard ≥0.6 去重); buildFullContext 含 KnowLever RAG 段"
+          ]
+        },
+        {
+          "name": "KnowLever 知识注入 workflow 步骤间",
+          "status": "done",
+          "test_status": "passed",
+          "evidence": [
+            "src/workflow/compiler.ts fetchKnowledgeEnrichment + WorkflowCompilerConfig.enableKnowledgeEnrichment; src/workflow/index.ts executeWorkflow 步骤间 enrichment 注入"
+          ]
+        },
+        {
+          "name": "checkpoint 刷新机制",
+          "status": "done",
+          "test_status": "passed",
+          "evidence": [
+            "src/workflow/memory.ts refreshCheckpoint + onStepEnd archiving + onTaskComplete summary"
+          ]
+        },
+        {
+          "name": "PolarSoul 干净记忆条款",
+          "status": "done",
+          "test_status": "passed",
+          "evidence": [
+            "src/workflow/clean-memory-clause.ts; tests/workflow/clean-memory-clause.test.ts"
+          ]
+        }
+      ]
+    }
+  ],
+  "tech_stack": {
+    "runtime": [
+      "Node.js >=20",
+      "TypeScript 5.8"
+    ],
+    "build": [
+      "tsdown 0.21"
+    ],
+    "test": [
+      "vitest 4.1"
+    ],
+    "deps": [
+      "commander 14",
+      "js-yaml 4"
+    ]
+  },
+  "module_structure": {
+    "src/cli.ts": "CLI entry (commander)",
+    "src/pilot/": "Migrated pilot modules (target tree, state machine, runtime, daemon, review)",
+    "src/pilot/review.ts": "Independent-context review module (reviewShot via AgentFactory)",
+    "src/core/": "Orchestrator + agents (claude/codex adapters, factory, stream-utils)",
+    "src/yolo/": "YOLO kernel (types, receipt, failure, ledger, orchestrator)",
+    "src/templates/": "Iteration prompts + review prompt + pattern router",
+    "src/templates/patterns/": "Coding thinking pattern templates (JSON, Agent_core schema)",
+    "src/workflow/": "Workflow engine (compiler, memory, router-agent, types, knowlever-client)"
+  },
+  "lobster": {
+    "consumes_events_from": "SOTAgent/data/lobster-events.jsonl",
+    "endpoints_exposed": "/api/pilot/{health,status,events,targets}"
+  },
+  "service_management": {
+    "install_command": "npm ci",
+    "start_command": "node dist/cli.mjs --daemon",
+    "restart_command": "node dist/cli.mjs --daemon",
+    "health_endpoint": "http://127.0.0.1:4900/api/pilot/health"
+  },
+  "contacts": {
+    "owner": "mac",
+    "last_updated": "2026-05-13T04:15+08:00",
+    "updated_by": "polarpilot-opus-260513",
+    "ssot_creation_note": "Created retroactively to satisfy P5b (SSoT for PolarPilot was previously missing despite tasks PolarPilot_1/1_1/1_1_1 being done).",
+    "last_change_note": "R7 KnowLever integration: knowlever-client.ts adapter + FourLayerMemoryManager KnowLever fusion with trigram dedup + compiler knowledge enrichment + 18 new tests (158/158 total pass)."
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "version": "0.1.0",
+  "capabilities": [
+    {
+      "id": "polarpilot.workflow.compile",
+      "transport": "cli",
+      "description": "编译 workflow.md 框图为 CompiledWorkflow"
+    },
+    {
+      "id": "polarpilot.workflow.execute",
+      "transport": "cli",
+      "description": "执行已编译的 workflow"
+    },
+    {
+      "id": "polarpilot.memory.blocks",
+      "transport": "http",
+      "endpoint": "/api/pilot/memory/blocks",
+      "method": "POST",
+      "description": "通过 PolarMemory 获取长期记忆 Block"
+    },
+    {
+      "id": "polarpilot.assistant.task",
+      "transport": "http",
+      "endpoint": "/api/pilot/events",
+      "method": "POST",
+      "description": "接收 PolarClaw 下发的 assistant_task"
+    }
+  ]
+}

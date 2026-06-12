@@ -1,0 +1,15 @@
+{
+  "name": "test-first",
+  "tags": ["test", "tdd", "测试", "验证", "assert"],
+  "description": "Write failing tests first, then implement until they pass. Prevents writing code that 'looks right' but doesn't actually work.",
+  "steps": [
+    "Read the target description and identify concrete acceptance criteria",
+    "Write a minimal failing test that captures the core requirement",
+    "Run the test to confirm it fails for the right reason",
+    "Implement the smallest change that makes the test pass",
+    "Run all tests to ensure nothing is broken",
+    "Refactor if needed while keeping tests green"
+  ],
+  "applicable_types": ["test_target"],
+  "version": "1.0"
+}

@@ -1,0 +1,15 @@
+{
+  "name": "error-handling-audit",
+  "tags": ["error", "exception", "handling", "异常", "错误处理", "catch", "throw"],
+  "description": "Audit error handling paths: ensure errors are caught, logged, and surfaced correctly.",
+  "steps": [
+    "List all operations that can fail (I/O, network, parsing, user input)",
+    "For each, verify: is the error caught? Is it logged? Is the user notified?",
+    "Check that error messages are actionable — not just 'something went wrong'",
+    "Verify cleanup happens on error (close connections, release locks, rollback state)",
+    "Test error paths explicitly — don't rely on 'it probably works'",
+    "Ensure errors don't leak internal details (stack traces, file paths, secrets)"
+  ],
+  "applicable_types": ["test_target"],
+  "version": "1.0"
+}

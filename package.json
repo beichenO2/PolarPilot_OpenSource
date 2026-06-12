@@ -1,0 +1,32 @@
+{
+  "name": "polarpilot",
+  "version": "0.1.0",
+  "description": "Autonomous project evolution daemon — target-driven iterative coding with YOLO kernel",
+  "type": "module",
+  "bin": {
+    "polarpilot": "dist/cli.mjs"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "start": "node dist/cli.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "chokidar": "^5.0.0",
+    "commander": "^14.0.3",
+    "js-yaml": "^4.1.1"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^22.0.0",
+    "ajv": "^8.20.0",
+    "tsdown": "^0.21.7",
+    "typescript": "^5.8.0",
+    "vitest": "^4.1.2"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://polarisor.local/polarpilot/assistant-task.schema.json",
+  "title": "PolarPilot AssistantTask",
+  "description": "Payload contract for PolarClaw → PolarPilot assistant task hand-off (delivered as LobsterEvent.payload with event.type = 'assistant_task').",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["fundamentalGoal", "executionApproach", "stopCondition"],
+  "properties": {
+    "fundamentalGoal": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The root objective the assistant must accomplish; injected as the orchestrator prompt."
+    },
+    "executionApproach": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Strategy hint for how the goal should be tackled (e.g. 'shell', 'edit', 'mixed')."
+    },
+    "stopCondition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["successCriteria", "failureCriteria"],
+      "properties": {
+        "successCriteria": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Statement evaluated against the agent output for graceful stop / success."
+        },
+        "failureCriteria": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Statement that, when matched, marks the task as failed."
+        }
+      }
+    }
+  }
+}

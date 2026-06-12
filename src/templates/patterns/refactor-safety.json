@@ -1,0 +1,15 @@
+{
+  "name": "refactor-safety",
+  "tags": ["refactor", "重构", "cleanup", "rename", "extract", "restructure"],
+  "description": "Refactoring safety checklist: ensure behavior preservation through tests and incremental changes.",
+  "steps": [
+    "Ensure comprehensive test coverage exists before starting (add tests if missing)",
+    "Run all tests to establish a green baseline",
+    "Make ONE structural change at a time (extract, rename, move, inline)",
+    "Run tests after each change to confirm behavior preservation",
+    "Review the diff — does it only contain structural changes, no logic changes?",
+    "Run the full test suite one final time"
+  ],
+  "applicable_types": ["test_target", "root_target"],
+  "version": "1.0"
+}

@@ -1,0 +1,15 @@
+{
+  "name": "read-before-modify",
+  "tags": ["modify", "change", "update", "修改", "改动", "existing"],
+  "description": "Thoroughly read existing code before making changes. Prevents blind edits that break implicit contracts.",
+  "steps": [
+    "Identify all files that will be touched by this change",
+    "Read each file completely — understand imports, exports, and callers",
+    "Map the data flow: where does input come from, where does output go",
+    "Identify implicit contracts (naming conventions, error handling patterns, return types)",
+    "Plan the change with minimal disruption to existing contracts",
+    "Make the change and verify all callers still work"
+  ],
+  "applicable_types": ["test_target", "root_target"],
+  "version": "1.0"
+}

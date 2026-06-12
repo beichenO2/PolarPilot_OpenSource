@@ -1,0 +1,15 @@
+{
+  "name": "performance-analysis",
+  "tags": ["performance", "optimize", "slow", "性能", "优化", "latency", "memory", "cache"],
+  "description": "Performance optimization framework: measure first, then optimize the bottleneck.",
+  "steps": [
+    "Identify the specific performance metric to improve (latency, throughput, memory)",
+    "Measure the current baseline with concrete numbers",
+    "Profile to find the actual bottleneck (don't guess)",
+    "Propose a targeted fix for the bottleneck — avoid premature optimization elsewhere",
+    "Implement the fix and re-measure",
+    "Verify no functional regressions were introduced"
+  ],
+  "applicable_types": ["test_target"],
+  "version": "1.0"
+}

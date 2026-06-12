@@ -1,0 +1,15 @@
+{
+  "name": "api-design-review",
+  "tags": ["api", "design", "endpoint", "route", "REST", "设计", "接口设计"],
+  "description": "API design review flow: consistency, naming, error handling, versioning.",
+  "steps": [
+    "List all endpoints/functions being added or changed",
+    "Check naming consistency with existing APIs in the project",
+    "Verify error responses follow the project's error format",
+    "Check input validation — reject bad input early with clear messages",
+    "Consider backward compatibility — can existing clients upgrade without breaking?",
+    "Document the API surface: parameters, return types, error codes"
+  ],
+  "applicable_types": ["test_target", "root_target"],
+  "version": "1.0"
+}

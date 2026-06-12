@@ -1,0 +1,44 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "success": {
+      "type": "boolean"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "key_changes_made": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "key_learnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "should_fully_stop": {
+      "type": "boolean"
+    },
+    "shot_outcome": {
+      "type": "string",
+      "enum": [
+        "hit",
+        "miss"
+      ]
+    },
+    "shot_delta": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "success",
+    "summary",
+    "key_changes_made",
+    "key_learnings",
+    "should_fully_stop"
+  ]
+}

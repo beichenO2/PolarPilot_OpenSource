@@ -1,0 +1,15 @@
+{
+  "name": "architecture-analysis",
+  "tags": ["architecture", "design", "架构", "module", "dependency", "coupling", "separation"],
+  "description": "Architecture analysis: evaluate coupling, cohesion, and dependency direction before structural changes.",
+  "steps": [
+    "Draw the dependency graph of modules involved",
+    "Check dependency direction — do dependencies flow from unstable to stable?",
+    "Identify coupling points — where does changing one module force changes in another?",
+    "Evaluate cohesion — does each module have a single clear responsibility?",
+    "Propose the change with minimal new coupling",
+    "Verify the change doesn't create circular dependencies"
+  ],
+  "applicable_types": ["root_target"],
+  "version": "1.0"
+}

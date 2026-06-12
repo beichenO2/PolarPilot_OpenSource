@@ -1,0 +1,15 @@
+{
+  "name": "migration-upgrade",
+  "tags": ["migrate", "upgrade", "迁移", "升级", "version", "dependency", "breaking"],
+  "description": "Safe migration/upgrade pattern: backward compatibility, rollback plan, incremental rollout.",
+  "steps": [
+    "Document what is changing and why (old behavior → new behavior)",
+    "Check if the change is backward compatible — can old and new coexist?",
+    "If breaking: plan a migration path (dual-write, feature flag, versioned API)",
+    "Implement the change behind a feature flag or compatibility layer",
+    "Test with both old and new data/clients",
+    "Plan rollback: what happens if the migration fails halfway?"
+  ],
+  "applicable_types": ["test_target", "root_target"],
+  "version": "1.0"
+}

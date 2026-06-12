@@ -1,0 +1,15 @@
+{
+  "name": "bug-localization",
+  "tags": ["bug", "fix", "error", "crash", "修复", "故障", "debug", "issue"],
+  "description": "Three-step bug localization: reproduce, isolate, fix. Prevents 'fix' that masks the symptom without addressing the cause.",
+  "steps": [
+    "Reproduce the bug with a minimal test case",
+    "Add logging/assertions to narrow down where the unexpected behavior starts",
+    "Trace the data flow backward from the symptom to the root cause",
+    "Write a test that fails because of the root cause (not the symptom)",
+    "Fix the root cause with the smallest possible change",
+    "Verify the original reproduction case passes and no regressions were introduced"
+  ],
+  "applicable_types": ["test_target"],
+  "version": "1.0"
+}

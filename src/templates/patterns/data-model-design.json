@@ -1,0 +1,15 @@
+{
+  "name": "data-model-design",
+  "tags": ["data", "model", "schema", "database", "数据", "模型", "entity", "struct"],
+  "description": "Data model design pattern: define shape, validate constraints, plan migrations.",
+  "steps": [
+    "List all entities and their relationships",
+    "Define required vs optional fields with types and constraints",
+    "Identify invariants that must always hold (uniqueness, referential integrity)",
+    "Plan how existing data will migrate to the new shape",
+    "Write validation logic that enforces invariants at write time",
+    "Add tests for both valid and invalid data"
+  ],
+  "applicable_types": ["test_target", "root_target"],
+  "version": "1.0"
+}

@@ -1,0 +1,10 @@
+{
+  "task_id": "assist-1747054800000",
+  "status": "success",
+  "summary": "Added 'Hello PolarPilot' example block under CLI Usage; tests pass.",
+  "artifacts": ["README.md"],
+  "iterations": 2,
+  "tokens_used": 5421,
+  "started_at": "2026-05-12T13:00:00.000Z",
+  "finished_at": "2026-05-12T13:04:12.345Z"
+}
