@@ -74,14 +74,6 @@ PolarPilot Daemon 监听恶性 bug 信号（编译失败、测试大面积 faili
 | 自愈机制 | 整点扫描 · **10 min** 事件去重 · **60 min** 解锁保护 · **2 h** 加锁窗口 |
 | 记忆架构 | **4 层**（Soul / 长期 / Context / Scratch）+ Clean Memory 条款 |
 
----
-
-## 页面预览
-
-Guard 模式 daemon 启动后，可通过 HTTP API 查看运行状态：
-
-![PolarPilot 运行状态](screenshots/polarpilot-status.png)
-
 ```bash
 curl -s http://127.0.0.1:4900/api/pilot/health
 # {"healthy":true,"uptime_ms":...,"projects_monitored":1,"last_scan_at":"..."}
