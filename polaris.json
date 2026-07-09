@@ -578,9 +578,10 @@
   },
   "service_management": {
     "install_command": "npm ci",
-    "start_command": "node dist/cli.mjs --daemon",
-    "restart_command": "node dist/cli.mjs --daemon",
-    "health_endpoint": "http://127.0.0.1:4900/api/pilot/health"
+    "start_command": "node dist/cli.mjs --daemon --project AutoOffice",
+    "restart_command": "node dist/cli.mjs --daemon --project AutoOffice",
+    "health_endpoint": "http://127.0.0.1:4900/api/pilot/health",
+    "notes": "--daemon 必须带 --project（单项目管辖）。当前守护 AutoOffice，观察者模式：项目无 lobster/daemon-config.json 时 HourlyScanner 无触发器，永不启动 SelfHealer/Agentic Healer；升级为自愈需显式提交该配置文件（git 可审计）。"
   },
   "contacts": {
     "owner": "mac",
